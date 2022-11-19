@@ -10,15 +10,29 @@ import (
 	"github.com/gowhale/led-matrix-golang/pkg/gui"
 )
 
+const (
+	size = 10
+)
+
 func main() {
 	scrn := gui.NewTerminalGui(config.PinConfig{
-		RowPins: make([]int, 10),
-		ColPins: make([]int, 10),
+		RowPins: make([]int, size),
+		ColPins: make([]int, size),
 	})
 
-	snk := snake.NewSnake([]int{1, 2}, [][]int{{2, 2}, {3, 2}, {4, 2}})
+	snk := snake.NewSnake([]int{4, 2}, [][]int{{5, 2}, {6, 2}, {7, 2}})
 
-	cvs := canvas.NewCanvas(10, 10, snk)
+	cvs := canvas.NewCanvas(size, size, &snk)
 	cvs.GetMatrix()
+	scrn.DisplayMatrix(cvs.GetMatrix(), time.Second)
+	snk.NextMove()
+	scrn.DisplayMatrix(cvs.GetMatrix(), time.Second)
+	snk.NextMove()
+	scrn.DisplayMatrix(cvs.GetMatrix(), time.Second)
+	snk.NextMove()
+	scrn.DisplayMatrix(cvs.GetMatrix(), time.Second)
+	snk.NextMove()
+	scrn.DisplayMatrix(cvs.GetMatrix(), time.Second)
+	snk.NextMove()
 	scrn.DisplayMatrix(cvs.GetMatrix(), time.Second)
 }
