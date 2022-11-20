@@ -75,7 +75,7 @@ func (s *Snake) Score() int {
 
 func (s *Snake) Dead() bool {
 	allCords := s.Body()
-	for i, _ := range allCords {
+	for i := range allCords {
 		for j := i + 1; j < len(allCords); j++ {
 			if allCords[i][0] == allCords[j][0] && allCords[i][1] == allCords[j][1] {
 				return true

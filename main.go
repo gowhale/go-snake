@@ -3,6 +3,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"go-snake/pkg/canvas"
 	"go-snake/pkg/snake"
 	"log"
@@ -16,6 +17,10 @@ import (
 const (
 	size          = 8
 	defaultConfig = "eight-by-eight.json"
+)
+
+var (
+	GameFinErr = fmt.Errorf("fin")
 )
 
 func main() {
@@ -48,26 +53,29 @@ func main() {
 			log.Fatal(err)
 		}
 	}()
-	// scrn := gui.NewTerminalGui(cfg)
 
 	cvs := canvas.NewCanvas(size, size, &snk)
-	term.Init()
-	if err := gameLoop(scrn, cvs, &snk); err != nil {
+
+	if err := gameLoop(scrn, cvs, &snk); err != nil && err != GameFinErr {
 		log.Panicln(err)
 	}
-	term.Close()
 	log.Println("GOOD GAME!")
 	log.Printf("Your score was %d", snk.Score())
 }
 
 func gameLoop(scrn gui.Screen, cvs canvas.Canvas, snk *snake.Snake) error {
-	running := true
-	startTime := time.Now()
+	if err := term.Init(); err != nil {
+		return err
+	}
+	defer term.Close()
 
-	go func() error {
+	startTime := time.Now()
+	errs := make(chan error, 1)
+
+	go func() {
 		lastGrow := startTime
 		lastScreenRefresh := startTime
-		for running {
+		for {
 			timeSinceGrow := time.Since(lastGrow)
 			if timeSinceGrow > time.Second*5 {
 				lastGrow = time.Now()
@@ -78,22 +86,19 @@ func gameLoop(scrn gui.Screen, cvs canvas.Canvas, snk *snake.Snake) error {
 				lastScreenRefresh = time.Now()
 				snk.NextMove()
 				if snk.Dead() {
-					running = false
-					return nil
+					errs <- GameFinErr
 				}
 			}
 		}
-		return nil
 	}()
 
-	go func() error {
+	go func() {
 		for {
 			switch ev := term.PollEvent(); ev.Type {
 			case term.EventKey:
 				switch ev.Key {
 				case term.KeyEsc:
-					running = false
-					log.Panicln("esc pressed")
+					errs <- fmt.Errorf("esc pressed")
 				case term.KeyArrowUp:
 					log.Println("Going North")
 					snk.ChangeDirection(snake.North)
@@ -107,18 +112,30 @@ func gameLoop(scrn gui.Screen, cvs canvas.Canvas, snk *snake.Snake) error {
 					log.Println("Going South")
 					snk.ChangeDirection(snake.South)
 				default:
-
+					log.Println("Invalid key")
 				}
 			case term.EventError:
-				return ev.Err
+				errs <- ev.Err
 			}
-
 		}
 	}()
-	for running {
-		log.Println("Displaying!")
-		scrn.DisplayMatrix(cvs.GetMatrix(), time.Millisecond*50)
-		scrn.AllLEDSOff()
+
+	go func() {
+		for {
+			log.Println("Displaying!")
+			if err := scrn.DisplayMatrix(cvs.GetMatrix(), time.Millisecond*50); err != nil {
+				errs <- err
+			}
+			if err := scrn.AllLEDSOff(); err != nil {
+				errs <- err
+			}
+		}
+	}()
+
+	for {
+		err := <-errs
+		if err != nil {
+			return err
+		}
 	}
-	return nil
 }
