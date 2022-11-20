@@ -14,7 +14,6 @@ import (
 )
 
 const (
-	size          = 8
 	defaultConfig = "eight-by-eight.json"
 )
 
@@ -27,12 +26,17 @@ func main() {
 		log.Printf("Using default config file %s\n", defaultConfig)
 	}
 
+	// // To make a custom size game uncomment the following code:
+	// cfg := config.PinConfig{
+	// 	RowPins: make([]int, 20),
+	// 	ColPins: make([]int, 20),
+	// }
 	cfg, err := config.LoadConfig(*configName)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	snk := snake.NewSnake([]int{4, 2}, [][]int{{5, 2}, {6, 2}, {7, 2}}, size, size)
+	snk := snake.NewSnake([]int{4, 2}, [][]int{{5, 2}, {6, 2}, {7, 2}}, cfg.ColCount(), cfg.RowCount())
 
 	scrn := gui.NewTerminalGui(cfg)
 	if !*debugMode {
@@ -49,7 +53,7 @@ func main() {
 		}
 	}()
 
-	cvs := canvas.NewCanvas(size, size, &snk)
+	cvs := canvas.NewCanvas(cfg.ColCount(), cfg.RowCount(), &snk)
 
 	if err := game.Loop(scrn, cvs, &snk); err != nil && err != game.ErrGameFin {
 		log.Panicln(err)
