@@ -14,15 +14,17 @@ type Snake struct {
 	xLimit, yLimit int
 	headCord       []int
 	tailCord       [][]int
+	moves          int
 }
 
 func NewSnake(headCord []int, tailCord [][]int, xLimit, yLimit int) Snake {
 	return Snake{
-		direction: North,
+		direction: West,
 		headCord:  headCord,
 		tailCord:  tailCord,
 		xLimit:    xLimit,
 		yLimit:    yLimit,
+		moves:     0,
 	}
 }
 
@@ -30,19 +32,22 @@ func (s *Snake) Body() [][]int {
 	return append([][]int{s.headCord}, s.tailCord...)
 }
 
+func (s *Snake) Println() {
+	log.Printf("direction=%s head=%+v tail =%+v", s.direction, s.headCord, s.tailCord)
+}
+
 func (s *Snake) UpdatePositions(x, y int) {
-	s.tailCord = s.tailCord[:len(s.tailCord)-1]
-	s.tailCord = append([][]int{s.headCord}, s.tailCord...)
+	if s.moves%10 != 0 {
+		s.tailCord = s.tailCord[:len(s.tailCord)-1]
+	}
+	s.moves++
+	s.tailCord = append([][]int{{s.headCord[0], s.headCord[1]}}, s.tailCord...)
 	headX, headY := s.headCord[0]+x, s.headCord[1]+y
 	if headX < 0 {
-		log.Println("SETTING X LIM")
 		headX = s.xLimit - 1
 	}
 	if headY < 0 {
-		log.Println("SETTING Y LIM")
 		headY = s.yLimit - 1
-		log.Println(s.yLimit - 1)
-		log.Println(headY)
 		s.headCord[1] = headY
 	}
 	if headX > s.xLimit-1 {
@@ -51,8 +56,24 @@ func (s *Snake) UpdatePositions(x, y int) {
 	if headY > s.yLimit-1 {
 		headY = 0
 	}
-	log.Println(headX, headY)
 	s.headCord = []int{headX, headY}
+	s.Println()
+}
+
+func (s *Snake) Score() int {
+	return s.moves
+}
+
+func (s *Snake) Dead() bool {
+	allCords := append([][]int{s.headCord}, s.tailCord...)
+	for i, _ := range allCords {
+		for j := i + 1; j < len(allCords); j++ {
+			if allCords[i][0] == allCords[j][0] && allCords[i][1] == allCords[j][1] {
+				return true
+			}
+		}
+	}
+	return false
 }
 
 func (s *Snake) NextMove() {
@@ -70,6 +91,7 @@ func (s *Snake) NextMove() {
 		log.Println("Going west!")
 		s.UpdatePositions(-1, 0)
 	}
+
 }
 
 var possibleDirections = map[string]map[string]bool{

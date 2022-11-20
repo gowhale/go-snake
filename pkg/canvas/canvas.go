@@ -5,6 +5,7 @@ import "go-snake/pkg/snake"
 type Canvas struct {
 	width, height int
 	snake         *snake.Snake
+	moves         int
 }
 
 func NewCanvas(width, height int, snake *snake.Snake) Canvas {
