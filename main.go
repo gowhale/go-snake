@@ -13,14 +13,12 @@ import (
 )
 
 const (
-	size = 10
+	size = 8
 )
 
 func main() {
 	snk := snake.NewSnake([]int{4, 2}, [][]int{{5, 2}, {6, 2}, {7, 2}}, size, size)
 
-	// defer func() error {
-	// Query for the map containing information about all keys
 	scrn := gui.NewTerminalGui(config.PinConfig{
 		RowPins: make([]int, size),
 		ColPins: make([]int, size),
@@ -39,6 +37,7 @@ func main() {
 
 func gameLoop(scrn gui.Screen, cvs canvas.Canvas, snk *snake.Snake) error {
 	term.Init()
+	defer term.Close()
 	for {
 		snk.NextMove()
 		if snk.Dead() {
