@@ -21,8 +21,10 @@ const (
 )
 
 var excludedPkgs = map[string]bool{
-	"golang-repo-template":           true,
-	"golang-repo-template/pkg/fruit": true,
+	"golang-repo-template":                 true,
+	"golang-repo-template/pkg/fruit":       true,
+	"github.com/gowhale/go-snake":          true,
+	"github.com/gowhale/go-snake/pkg/game": true,
 }
 
 func main() {
