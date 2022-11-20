@@ -20,7 +20,7 @@ type Snake struct {
 
 func NewSnake(headCord []int, tailCord [][]int, xLimit, yLimit int) Snake {
 	return Snake{
-		direction: West,
+		direction: North,
 		headCord:  headCord,
 		tailCord:  tailCord,
 		xLimit:    xLimit,
@@ -67,7 +67,6 @@ func (s *Snake) UpdatePositions(x, y int) {
 		headY = 0
 	}
 	s.headCord = []int{headX, headY}
-	s.Println()
 }
 
 func (s *Snake) Score() int {
@@ -75,7 +74,7 @@ func (s *Snake) Score() int {
 }
 
 func (s *Snake) Dead() bool {
-	allCords := append([][]int{s.headCord}, s.tailCord...)
+	allCords := s.Body()
 	for i, _ := range allCords {
 		for j := i + 1; j < len(allCords); j++ {
 			if allCords[i][0] == allCords[j][0] && allCords[i][1] == allCords[j][1] {
