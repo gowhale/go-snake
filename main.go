@@ -20,7 +20,7 @@ const (
 )
 
 var (
-	GameFinErr = fmt.Errorf("fin")
+	errGameFin = fmt.Errorf("fin")
 )
 
 func main() {
@@ -56,11 +56,70 @@ func main() {
 
 	cvs := canvas.NewCanvas(size, size, &snk)
 
-	if err := gameLoop(scrn, cvs, &snk); err != nil && err != GameFinErr {
+	if err := gameLoop(scrn, cvs, &snk); err != nil && err != errGameFin {
 		log.Panicln(err)
 	}
 	log.Println("GOOD GAME!")
 	log.Printf("Your score was %d", snk.Score())
+}
+
+func passTime(snk *snake.Snake, errs chan error) {
+	startTime := time.Now()
+	lastGrow := startTime
+	lastScreenRefresh := startTime
+	for {
+		timeSinceGrow := time.Since(lastGrow)
+		if timeSinceGrow > time.Second*5 {
+			lastGrow = time.Now()
+		}
+		timeSinceRefresh := time.Since(lastScreenRefresh)
+		if timeSinceRefresh > time.Millisecond*100 {
+			lastScreenRefresh = time.Now()
+			snk.NextMove()
+			if snk.Dead() {
+				errs <- errGameFin
+			}
+		}
+	}
+}
+
+func checkKeyInput(snk *snake.Snake, errs chan error) {
+	for {
+		switch ev := term.PollEvent(); ev.Type {
+		case term.EventKey:
+			switch ev.Key {
+			case term.KeyEsc:
+				errs <- fmt.Errorf("esc pressed")
+			case term.KeyArrowUp:
+				log.Println("Going North")
+				snk.ChangeDirection(snake.North)
+			case term.KeyArrowLeft:
+				log.Println("Going west")
+				snk.ChangeDirection(snake.West)
+			case term.KeyArrowRight:
+				log.Println("Going East")
+				snk.ChangeDirection(snake.East)
+			case term.KeyArrowDown:
+				log.Println("Going South")
+				snk.ChangeDirection(snake.South)
+			default:
+				log.Println("Invalid key")
+			}
+		case term.EventError:
+			errs <- ev.Err
+		}
+	}
+}
+func displayGame(scrn gui.Screen, cvs canvas.Canvas, errs chan error) {
+	for {
+		log.Println("Displaying!")
+		if err := scrn.DisplayMatrix(cvs.GetMatrix(), time.Millisecond*50); err != nil {
+			errs <- err
+		}
+		if err := scrn.AllLEDSOff(); err != nil {
+			errs <- err
+		}
+	}
 }
 
 func gameLoop(scrn gui.Screen, cvs canvas.Canvas, snk *snake.Snake) error {
@@ -69,68 +128,13 @@ func gameLoop(scrn gui.Screen, cvs canvas.Canvas, snk *snake.Snake) error {
 	}
 	defer term.Close()
 
-	startTime := time.Now()
 	errs := make(chan error, 1)
 
-	go func() {
-		lastGrow := startTime
-		lastScreenRefresh := startTime
-		for {
-			timeSinceGrow := time.Since(lastGrow)
-			if timeSinceGrow > time.Second*5 {
-				lastGrow = time.Now()
-				snk.SetGrow()
-			}
-			timeSinceRefresh := time.Since(lastScreenRefresh)
-			if timeSinceRefresh > time.Millisecond*100 {
-				lastScreenRefresh = time.Now()
-				snk.NextMove()
-				if snk.Dead() {
-					errs <- GameFinErr
-				}
-			}
-		}
-	}()
+	go passTime(snk, errs)
 
-	go func() {
-		for {
-			switch ev := term.PollEvent(); ev.Type {
-			case term.EventKey:
-				switch ev.Key {
-				case term.KeyEsc:
-					errs <- fmt.Errorf("esc pressed")
-				case term.KeyArrowUp:
-					log.Println("Going North")
-					snk.ChangeDirection(snake.North)
-				case term.KeyArrowLeft:
-					log.Println("Going west")
-					snk.ChangeDirection(snake.West)
-				case term.KeyArrowRight:
-					log.Println("Going East")
-					snk.ChangeDirection(snake.East)
-				case term.KeyArrowDown:
-					log.Println("Going South")
-					snk.ChangeDirection(snake.South)
-				default:
-					log.Println("Invalid key")
-				}
-			case term.EventError:
-				errs <- ev.Err
-			}
-		}
-	}()
+	go checkKeyInput(snk, errs)
 
-	go func() {
-		for {
-			log.Println("Displaying!")
-			if err := scrn.DisplayMatrix(cvs.GetMatrix(), time.Millisecond*50); err != nil {
-				errs <- err
-			}
-			if err := scrn.AllLEDSOff(); err != nil {
-				errs <- err
-			}
-		}
-	}()
+	go displayGame(scrn, cvs, errs)
 
 	for {
 		err := <-errs
