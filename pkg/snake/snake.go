@@ -15,6 +15,7 @@ type Snake struct {
 	headCord       []int
 	tailCord       [][]int
 	moves          int
+	grow           bool
 }
 
 func NewSnake(headCord []int, tailCord [][]int, xLimit, yLimit int) Snake {
@@ -25,11 +26,20 @@ func NewSnake(headCord []int, tailCord [][]int, xLimit, yLimit int) Snake {
 		xLimit:    xLimit,
 		yLimit:    yLimit,
 		moves:     0,
+		grow:      false,
 	}
 }
 
 func (s *Snake) Body() [][]int {
 	return append([][]int{s.headCord}, s.tailCord...)
+}
+
+func (s *Snake) SetGrow() {
+	s.grow = true
+}
+
+func (s *Snake) Grow() bool {
+	return s.grow
 }
 
 func (s *Snake) Println() {
