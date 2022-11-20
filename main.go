@@ -74,7 +74,7 @@ func gameLoop(scrn gui.Screen, cvs canvas.Canvas, snk *snake.Snake) error {
 				snk.Grow()
 			}
 			timeSinceRefresh := time.Since(lastScreenRefresh)
-			if timeSinceRefresh > time.Millisecond*500 {
+			if timeSinceRefresh > time.Millisecond*100 {
 				lastScreenRefresh = time.Now()
 				snk.NextMove()
 				if snk.Dead() {
