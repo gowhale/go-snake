@@ -13,6 +13,7 @@ To run the code without using an Raspberry Pi and to get the output to print ont
 
 `go run . -debug` The debug flag specifies to just print on the terminal. 
 
+https://user-images.githubusercontent.com/32711718/202927540-10f61708-ea9a-4173-908e-ecb61f91092e.mov
 
 ## Actions used in this repo:
 
