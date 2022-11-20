@@ -3,12 +3,14 @@ package snake
 import "log"
 
 const (
-	North = "N"
-	South = "S"
-	East  = "E"
-	West  = "W"
+	North = "N" // North means the snake is going up the matrix
+	South = "S" // South means the snake is down up the matrix
+	East  = "E" // East means the snake is right accross the matrix
+	West  = "W" // West means the snake is left accross the matrix
 )
 
+// Snake represents the game character
+// Has attributes such as direction and position etc.
 type Snake struct {
 	direction      string
 	xLimit, yLimit int
@@ -18,6 +20,7 @@ type Snake struct {
 	grow           bool
 }
 
+// NewSnake creates a new instance of snake to be place on Canvas
 func NewSnake(headCord []int, tailCord [][]int, xLimit, yLimit int) Snake {
 	return Snake{
 		direction: North,
@@ -30,23 +33,27 @@ func NewSnake(headCord []int, tailCord [][]int, xLimit, yLimit int) Snake {
 	}
 }
 
+// Body returns all coords the snake is at
+// tail and head!
 func (s *Snake) Body() [][]int {
 	return append([][]int{s.headCord}, s.tailCord...)
 }
 
+// SetGrow marks the snake as ready to grow
 func (s *Snake) SetGrow() {
 	s.grow = true
 }
 
+// Grow returns if the snake needs to grow
 func (s *Snake) Grow() bool {
 	return s.grow
 }
 
-func (s *Snake) Println() {
+func (s *Snake) println() {
 	log.Printf("direction=%s head=%+v tail =%+v", s.direction, s.headCord, s.tailCord)
 }
 
-func (s *Snake) UpdatePositions(x, y int) {
+func (s *Snake) updatePositions(x, y int) {
 	if s.moves%10 != 0 {
 		s.tailCord = s.tailCord[:len(s.tailCord)-1]
 	}
@@ -69,10 +76,12 @@ func (s *Snake) UpdatePositions(x, y int) {
 	s.headCord = []int{headX, headY}
 }
 
+// Score returns the snakes score
 func (s *Snake) Score() int {
 	return s.moves
 }
 
+// Dead returns if the snake is dead as it has collided with itself
 func (s *Snake) Dead() bool {
 	allCords := s.Body()
 	for i := range allCords {
@@ -85,47 +94,49 @@ func (s *Snake) Dead() bool {
 	return false
 }
 
+// NextMove updates the snakes cords based on direction
 func (s *Snake) NextMove() {
 	switch s.direction {
 	case North:
 		log.Println("Going north!")
-		s.UpdatePositions(0, -1)
+		s.updatePositions(0, -1)
 	case South:
 		log.Println("Going south!")
-		s.UpdatePositions(0, 1)
+		s.updatePositions(0, 1)
 	case East:
 		log.Println("Going east!")
-		s.UpdatePositions(1, 0)
+		s.updatePositions(1, 0)
 	case West:
 		log.Println("Going west!")
-		s.UpdatePositions(-1, 0)
+		s.updatePositions(-1, 0)
 	}
-
 }
 
 var possibleDirections = map[string]map[string]bool{
-	North: map[string]bool{
+	North: {
 		North: true,
 		East:  true,
 		West:  true,
 	},
-	South: map[string]bool{
+	South: {
 		South: true,
 		East:  true,
 		West:  true,
 	},
-	East: map[string]bool{
+	East: {
 		North: true,
 		East:  true,
 		South: true,
 	},
-	West: map[string]bool{
+	West: {
 		North: true,
 		South: true,
 		West:  true,
 	},
 }
 
+// ChangeDirection changes the direction the snake is heading
+// Note: Snake cannot turn in opposite way
 func (s *Snake) ChangeDirection(direction string) {
 	if _, ok := possibleDirections[s.direction][direction]; ok {
 		s.direction = direction

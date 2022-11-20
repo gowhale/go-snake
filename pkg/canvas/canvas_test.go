@@ -24,7 +24,7 @@ func (c *canvasSuite) Test_NewCanvas() {
 	expected := Canvas{
 		width:  10,
 		height: 10,
-		snake:  &snake.Snake{},
+		snk:    &snake.Snake{},
 	}
 	c.Equal(expected, cnvs)
 }

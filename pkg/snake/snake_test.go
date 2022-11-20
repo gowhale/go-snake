@@ -220,7 +220,7 @@ func (s *snakeSuite) Test_NextMove_West_Edge() {
 		yLimit:    10,
 		grow:      false,
 	}
-	snk.Println()
+	snk.println()
 	snk.NextMove()
 	expectedSnake := Snake{
 		direction: West,
@@ -231,7 +231,7 @@ func (s *snakeSuite) Test_NextMove_West_Edge() {
 		yLimit:    10,
 		grow:      false,
 	}
-	snk.Println()
+	snk.println()
 
 	s.Equal(expectedSnake, snk)
 }
@@ -265,7 +265,7 @@ func (s *snakeSuite) Test_ChangeDirection() {
 		direction: North,
 		moves:     99,
 	}
-	
+
 	snk.ChangeDirection(East)
 	snk.ChangeDirection(South)
 	snk.ChangeDirection(West)

@@ -2,22 +2,24 @@ package canvas
 
 import "go-snake/pkg/snake"
 
+// Canvas represents the canvas which the snake is placed
 type Canvas struct {
 	width, height int
-	snake         *snake.Snake
+	snk           *snake.Snake
 }
 
-func NewCanvas(width, height int, snake *snake.Snake) Canvas {
+// NewCanvas returns a Canvas based on the height, width and snake passed
+func NewCanvas(width, height int, snk *snake.Snake) Canvas {
 	return Canvas{
 		width:  width,
 		height: height,
-		snake:  snake,
+		snk:    snk,
 	}
 }
 
+// GetMatrix returns a matrix made up of 1 and 0
+// 1's mean the snake's body lays there. BEWARE!
 func (c *Canvas) GetMatrix() [][]int {
-	snakeCords := c.snake.Body()
-
 	matrix := [][]int{}
 	for y := 0; y < c.height; y++ {
 		matrix = append(matrix, []int{})
@@ -26,6 +28,7 @@ func (c *Canvas) GetMatrix() [][]int {
 		}
 	}
 
+	snakeCords := c.snk.Body()
 	for _, cord := range snakeCords {
 		matrix[cord[1]][cord[0]] = 1
 	}
