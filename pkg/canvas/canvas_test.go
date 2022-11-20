@@ -3,8 +3,9 @@
 package canvas
 
 import (
-	"go-snake/pkg/snake"
 	"testing"
+
+	"github.com/gowhale/go-snake/pkg/snake"
 
 	"github.com/stretchr/testify/suite"
 )

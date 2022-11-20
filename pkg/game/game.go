@@ -3,10 +3,11 @@ package game
 
 import (
 	"fmt"
-	"go-snake/pkg/canvas"
-	"go-snake/pkg/snake"
 	"log"
 	"time"
+
+	"github.com/gowhale/go-snake/pkg/canvas"
+	"github.com/gowhale/go-snake/pkg/snake"
 
 	"github.com/gowhale/led-matrix-golang/pkg/gui"
 	term "github.com/nsf/termbox-go"

@@ -3,10 +3,11 @@ package main
 
 import (
 	"flag"
-	"go-snake/pkg/canvas"
-	"go-snake/pkg/game"
-	"go-snake/pkg/snake"
 	"log"
+
+	"github.com/gowhale/go-snake/pkg/canvas"
+	"github.com/gowhale/go-snake/pkg/game"
+	"github.com/gowhale/go-snake/pkg/snake"
 
 	"github.com/gowhale/led-matrix-golang/pkg/config"
 	"github.com/gowhale/led-matrix-golang/pkg/gui"

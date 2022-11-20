@@ -1,8 +1,7 @@
-
 // Package canvas is regarding the thing the snake is placed on
 package canvas
 
-import "go-snake/pkg/snake"
+import "github.com/gowhale/go-snake/pkg/snake"
 
 // Canvas represents the canvas which the snake is placed
 type Canvas struct {
