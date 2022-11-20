@@ -22,8 +22,8 @@ func (s *snakeSuite) Test_Grow() {
 	snk := Snake{
 		grow: false,
 	}
-	snk.SetGrow()
-	s.Equal(true, snk.Grow())
+	snk.SetGrow(true)
+	s.Equal(true, snk.GetGrow())
 }
 
 func (s *snakeSuite) Test_Dead_True() {
@@ -66,7 +66,7 @@ func (s *snakeSuite) Test_NextMove_North_Middle() {
 	s.Equal(expectedSnake, snk)
 }
 
-func (s *snakeSuite) Test_NextMove_North_Top() {
+func (s *snakeSuite) Test_NextMove_North_Top_NoGrow() {
 	snk := Snake{
 		direction: North,
 		headCord:  []int{1, 0},
@@ -81,6 +81,30 @@ func (s *snakeSuite) Test_NextMove_North_Top() {
 		direction: North,
 		headCord:  []int{1, 9},
 		tailCord:  [][]int{{1, 0}, {1, 1}},
+		moves:     2,
+		xLimit:    10,
+		yLimit:    10,
+		grow:      false,
+	}
+
+	s.Equal(expectedSnake, snk)
+}
+
+func (s *snakeSuite) Test_NextMove_North_Top_Grow() {
+	snk := Snake{
+		direction: North,
+		headCord:  []int{1, 0},
+		tailCord:  [][]int{{1, 1}, {1, 2}},
+		moves:     1,
+		xLimit:    10,
+		yLimit:    10,
+		grow:      true,
+	}
+	snk.NextMove()
+	expectedSnake := Snake{
+		direction: North,
+		headCord:  []int{1, 9},
+		tailCord:  [][]int{{1, 0}, {1, 1}, {1, 2}},
 		moves:     2,
 		xLimit:    10,
 		yLimit:    10,

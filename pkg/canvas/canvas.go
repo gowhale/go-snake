@@ -1,3 +1,5 @@
+
+// Package canvas is regarding the thing the snake is placed on
 package canvas
 
 import "go-snake/pkg/snake"

@@ -1,3 +1,4 @@
+// Package snake contains code to do with the Snake 'character'
 package snake
 
 import "log"
@@ -40,22 +41,24 @@ func (s *Snake) Body() [][]int {
 }
 
 // SetGrow marks the snake as ready to grow
-func (s *Snake) SetGrow() {
-	s.grow = true
+func (s *Snake) SetGrow(g bool) {
+	s.grow = g
 }
 
-// Grow returns if the snake needs to grow
-func (s *Snake) Grow() bool {
+// GetGrow returns if the snake needs to grow
+func (s *Snake) GetGrow() bool {
 	return s.grow
 }
 
 func (s *Snake) println() {
-	log.Printf("direction=%s head=%+v tail =%+v", s.direction, s.headCord, s.tailCord)
+	log.Printf("direction=%s head=%+v tail=%+v", s.direction, s.headCord, s.tailCord)
 }
 
 func (s *Snake) updatePositions(x, y int) {
-	if s.moves%10 != 0 {
+	if !s.GetGrow() {
 		s.tailCord = s.tailCord[:len(s.tailCord)-1]
+	} else {
+		s.SetGrow(false)
 	}
 	s.moves++
 	s.tailCord = append([][]int{{s.headCord[0], s.headCord[1]}}, s.tailCord...)
