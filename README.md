@@ -6,6 +6,8 @@ Implementing a simple snake game using the GUI module I made here: https://githu
 If an LED segment display has been wired up to the Raspberry Pi correctly. After running the following command: 
 `go run .`
 
+https://user-images.githubusercontent.com/32711718/202927713-fbc34585-e9c5-4dbd-8ed6-9f8f50143db0.mov
+
 
 ## Terminal Demo
 
