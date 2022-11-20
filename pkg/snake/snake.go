@@ -101,16 +101,12 @@ func (s *Snake) Dead() bool {
 func (s *Snake) NextMove() {
 	switch s.direction {
 	case North:
-		log.Println("Going north!")
 		s.updatePositions(0, -1)
 	case South:
-		log.Println("Going south!")
 		s.updatePositions(0, 1)
 	case East:
-		log.Println("Going east!")
 		s.updatePositions(1, 0)
 	case West:
-		log.Println("Going west!")
 		s.updatePositions(-1, 0)
 	}
 }

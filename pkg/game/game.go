@@ -48,16 +48,12 @@ func checkKeyInput(snk *snake.Snake, errs chan error) {
 			case term.KeyEsc:
 				errs <- fmt.Errorf("esc pressed")
 			case term.KeyArrowUp:
-				log.Println("Going North")
 				snk.ChangeDirection(snake.North)
 			case term.KeyArrowLeft:
-				log.Println("Going west")
 				snk.ChangeDirection(snake.West)
 			case term.KeyArrowRight:
-				log.Println("Going East")
 				snk.ChangeDirection(snake.East)
 			case term.KeyArrowDown:
-				log.Println("Going South")
 				snk.ChangeDirection(snake.South)
 			default:
 				log.Println("Invalid key")
@@ -71,7 +67,6 @@ func checkKeyInput(snk *snake.Snake, errs chan error) {
 // displayGame displays the gamescreen
 func displayGame(scrn gui.Screen, cvs canvas.Canvas, errs chan error) {
 	for {
-		log.Println("Displaying!")
 		if err := scrn.DisplayMatrix(cvs.GetMatrix(), time.Millisecond*50); err != nil {
 			errs <- err
 		}
