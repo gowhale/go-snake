@@ -1,6 +1,19 @@
 # go-snake
 Implementing a simple snake game using the GUI module I made here: https://github.com/gowhale/LED-MATRIX-GOLANG
 
+## Raspberry Pi Demo 
+
+If an LED segment display has been wired up to the Raspberry Pi correctly. After running the following command: 
+`go run .`
+
+
+## Terminal Demo
+
+To run the code without using an Raspberry Pi and to get the output to print onto the terminal use the following command:
+
+`go run . -debug` The debug flag specifies to just print on the terminal. 
+
+
 ## Actions used in this repo:
 
 ### Testing
